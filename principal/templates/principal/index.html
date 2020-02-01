@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load mathfilters %}
+
+{% block content %}
+    
+    <script src="{% static 'js/images.js' %}"></script>
+    
+    <button type="button" class="btn btn-primary" onclick="submission()" id="button-submission">
+        Primary
+    </button>
+    <section class="categories_area clearfix" id="about">
+        <div class="container">
+            <div class="row">
+                {% for index, article in articles %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class='card-header text-center'>
+                            <!-- Material checked -->
+                            <div class="form-check">
+                                <input 
+                                    type="checkbox" 
+                                    class="form-check-input" 
+                                    id="checkbox-{{article.image}}"
+                                    onclick="images_select(this)"
+                                >
+                                <label class="form-check-label" for="checkbox-{{article.image}}"></label>
+                            </div>
+                            <li>
+                                <ul>Prix :  {{ article.price }}</ul>
+                                <ul>Quantite :  {{ article.quantite }}</ul>
+                            </li>
+                        </div>
+                        <div class="single_catagory wow fadeInUp" data-wow-delay=".{{ index|mul:3}}s">
+                            <img 
+                                class=img-responsive 
+                                src="{{ article.image.url }}" 
+                                alt="{{ article.description }}"  
+                            />
+                            <div class="catagory-title">
+                                <a href="#">
+                                    <h5>{{ article.description }}</h5>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
