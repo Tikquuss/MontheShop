@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load mathfilters %}
+
+{% block content %}
+        <style>
+            /* Style pour les articles */
+            ul {
+                list-style-type: none;
+                /*margin-left: 37%;*/
+                padding: 0
+            }
+
+            .rating {
+                margin-left: 37%
+            }
+
+            .page {
+                background-color: #dfe6e0;
+                padding: 2%;
+                margin: auto
+            }
+
+            .fa {
+                color: #f2dd1d
+            }
+
+            .card-img-top {
+                width: 90%;
+                height: 225px
+            }
+
+            .view {
+                background-color: #dfe6e0;
+                padding: 10px;
+                margin: 20px
+            }
+
+            .card {
+                width: 95%;
+                padding: 0px;
+                margin-left: 2%
+            }
+
+            .card-footer {
+                background-color: #ff772e;
+                font-weight: 700
+            }
+
+            .price {
+                color: #ff4517;
+                font-weight: 600
+            }
+        </style>
+    <!--For Page-->
+    <section class="categories_area clearfix" id="about">
+        <div class="container">
+            <div class="page">
+                {% if message %}        
+                    <p class="text-center" style="color: red;">
+                        {{message}}
+                    </p>
+                {% else %}
+                    <div class="row">
+                        {% for index, article in articles %}
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="single_catagory wow fadeInUp" data-wow-delay=".{{ index|mul:3}}s">
+                                    <div class="card card-cascade card-ecommerce wider shadow mb-5 ">
+                                        <!--Card image-->
+                                        <div class="view view-cascade overlay text-center"> 
+                                            <img class="card-img-top" src="{{ article.image.url }}" 
+                                                alt="{{ article.description }}" > 
+                                            <a>
+                                                <div class="mask rgba-white-slight"></div>
+                                            </a> 
+                                        </div>
+                                        <!--Card Body-->
+                                        <div class="card-body card-body-cascade text-center">
+                                            <!--Card Title-->
+                                            <h4 class="card-title"><strong><a href="">{{ article.name }}</a></strong></h4> <!-- Card Description-->
+                                            <p class="card-text">{{ article.description }} </p>
+                                            <p class="price">{{ article.price }} Fcfa</p> <!-- Card Rating-->
+                                            
+                                            <!--Card footer-->
+                                            {% if not pannier %} 
+                                                <div class="card-footer" style="background-color: #ff772e; font-weight: 700">
+                                                    <ul class="nav navbar-nav navbar-right">
+                                                        <li class="active">
+                                                            <label class="form-check-label" for="checkbox-{{article.id}}"></label>
+                                                            <input 
+                                                                    type="checkbox" 
+                                                                    class="form-check-input" 
+                                                                    id="checkbox-{{article.id}}"
+                                                                    onclick="images_select(this)"
+                                                            >
+                                                            <span>Ajouter au pannier</span> <em>  </em> <i class="fa fa-cart-arrow-down"></i> 
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            {% endif %} 
+                                            <!--
+                                            <ul class="nav navbar-nav navbar-right">
+                                                <li class="active">
+                                                    <a href="#">
+                                                        <i class="fa fa-cart-arrow-down"></i> 
+                                                        Ajouter au pannier
+                                                    </a></li>
+                                                
+                                                <li class="active">
+                                                    {% if art.is_authenticated %}
+                                                    <a href="">
+                                                        <i class="fa fa-user"></i> {{ user.get_full_name }}</a>
+                                                    {% else %}
+                                                    <a href="">
+                                                        <i class="fa fa-sign-in"></i> Inscription/Connexion</a>
+                                                    {% endif %}
+                                                </li>
+                                                {% if user.is_authenticated %}
+                                                    <li class="active">
+                                                        <a href="">
+                                                    <i class="fa fa-sign-out"></i></a></li>
+                                                {% endif %}
+                                                
+                                            </ul>
+                                            -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    <style>
+        .content_tikeng {
+            background-image: url("{% static 'img/bg_form.jpg' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            height: 100%;
+            height: 100%;
+            align-content: center;
+        }
+
+        .card_tikeng {
+            margin-top: auto;
+            margin-bottom: auto;
+            width: 400px;
+            background-color: rgba(0,0,0,0.5) !important;
+        }
+
+        .content .modal-header h3{
+            color: white;
+        }
+
+        input:focus{
+            outline: 0 0 0 0  !important;
+            box-shadow: 0 0 0 0 !important;
+        }
+
+        .login_btn{
+            color: black;
+        }
+
+        .login_btn:hover{
+            color: black;
+            background-color: white;
+        }
+    </style>
+    <script src="{% static 'js/images.js' %}"></script>
+    <div class="modal fade content" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog d-flex justify-content-center h-100" role="document">
+            <div class="modal-content card_tikeng content_tikeng" 
+                {% if connect %}
+                    style="height: 410px;"
+                {% else %}
+                    style="height: 200px;"
+                {% endif %}
+            >
+                {% if inscrit and connect %}
+                    <div class="modal-header">
+                        <h3 class="text-center" style="color: seagreen;"> Validation</h3>
+                        <button type="button" class="close float-right" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+                <div class="modal-body">
+                    {% if inscrit %}
+                        {% if connect %}
+                            <form class="content" method="post" action="/log" novalidate>
+                                {% csrf_token %}
+                                <div>
+                                    <div class="row" >
+                                        <label for="username" style="color: seagreen; padding-left : 150px;">
+                                            <strong>username</strong> 
+                                        </label>
+                                        <input type="text" placeholder="nom d'utilisateur" class="form-control" 
+                                            id="username" name="username" value="{{ currentDemandeur.username }}"   disabled
+                                        >
+                                    </div>
+                                    <div class="row" style="padding-top: 1em;">
+                                        <label for="password" style="color:seagreen; padding-left : 150px; ">
+                                            <strong>password</strong>
+                                        </label>
+                                        <input type="password" placeholder="mot de passe" class="form-control" name="password" 
+                                            id="password" value="{{ currentDemandeur.password }}" disabled
+                                        >
+                                    </div>   
+                                </div>
+                                <div class="form-group" style="padding-top: 3em;">
+                                    <button type="submit"  class="btn btn-success login_btn float-left" onclick="modifier()">
+                                        Confirmer les informations
+                                    </button>
+                                    <a  class="btn btn-success login_btn float-right" onclick="modifier()" id='modal-link'>
+                                        Modifier
+                                    </a>
+                                </div>
+                            </form>
+                        {% else %}
+                            <p class="text-center" style="color:red">
+                                Veuillez-vous connecter
+                            </p>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-center" style="color:red">
+                            Veuillez-vous inscrire
+                        </p>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    {% if inscrit and not connect %}
+                        <a href="{% url 'singin' %}" class="btn btn-success login_btn float-right">Se connecter</a>
+                    {% elif not inscrit %}
+                        <a href="{% url 'singup' %}" class="btn btn-success login_btn float-right">S'inscrire</a>
+                    {% endif %}
+                    <button type="button" class="btn btn-secondary login_btn float-left" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
